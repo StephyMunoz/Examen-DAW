@@ -78,10 +78,16 @@ const AdvicesPage = ({ advice }) => {
     getList();
   };
 
-  const handleRemove = (adviceItem) => {
-    setAdviceList((prevState) =>
-      prevState.filter((adviceList, index) => index !== adviceItem.id)
-    );
+  const handleRemove = (index) => {
+    let num = 0;
+    for (let i = 0; i < adviceList.length; i++) {
+      if (adviceList[i].id === index) {
+        num = i;
+      }
+    }
+    setAdviceList((prevState) => {
+      return prevState.filter((adviceList, i) => i !== num);
+    });
   };
 
   const getList = async () => {
@@ -94,6 +100,7 @@ const AdvicesPage = ({ advice }) => {
         <Grid item xs={6}>
           <h1>Consejo del día</h1>
           <Advice>{adv.slip.advice}</Advice>
+
           <StyledButton
             onClick={() => handleSaveAdvice(adv.slip)}
             color="primary"
@@ -101,6 +108,7 @@ const AdvicesPage = ({ advice }) => {
           >
             Marcar como favorito
           </StyledButton>
+          {"    "}
           <StyledButton
             onClick={handleChange}
             color="primary"
@@ -126,7 +134,7 @@ const AdvicesPage = ({ advice }) => {
                     <TableCell align="right">
                       {" "}
                       <StyledButton
-                        onClick={() => handleRemove(ad)}
+                        onClick={() => handleRemove(ad.id)}
                         color="primary"
                         variant="contained"
                       >
@@ -171,6 +179,7 @@ const AdvicesPage = ({ advice }) => {
             >
               <SearchIcon /> Buscar
             </Button>
+            <div>Resultados de la búsqueda</div>
           </form>
           <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
