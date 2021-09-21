@@ -17,6 +17,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
 import Divider from "@material-ui/core/Divider";
+import Box from "@material-ui/core/Box";
 
 const fetcher = (url) => api.get(url).then((res) => res.data);
 
@@ -38,7 +39,9 @@ const AdvicesPage = ({ advice }) => {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
   const { data, error } = useSWR("/advice/search/" + parameter, fetcher);
+
   if (error) {
     return "Ocurrió un error" + error;
   }
@@ -76,26 +79,33 @@ const AdvicesPage = ({ advice }) => {
   };
 
   const handleRemove = (adviceItem) => {
-    for (let i = 0; i < adviceList.length; i++) {
-      if (adviceList[i].id === adviceItem.id) {
-        adviceList.splice(adviceItem.id, 1);
-      }
-    }
+    setAdviceList((prevState) =>
+      prevState.filter((adviceList, index) => index !== adviceItem.id)
+    );
   };
 
   const getList = async () => {
     setAdvicesList(data.slips);
   };
+
   return (
     <div className={styles.Advices}>
       <StyledGrid container spacing={2}>
         <Grid item xs={6}>
           <h1>Consejo del día</h1>
           <Advice>{adv.slip.advice}</Advice>
-          <StyledButton onClick={() => handleSaveAdvice(adv.slip)}>
+          <StyledButton
+            onClick={() => handleSaveAdvice(adv.slip)}
+            color="primary"
+            variant="contained"
+          >
             Marcar como favorito
           </StyledButton>
-          <StyledButton onClick={handleChange}>
+          <StyledButton
+            onClick={handleChange}
+            color="primary"
+            variant="contained"
+          >
             <SearchIcon /> Siguiente consejo
           </StyledButton>
           {alert !== "" && <h6>{alert}</h6>}
@@ -115,7 +125,11 @@ const AdvicesPage = ({ advice }) => {
                     </TableCell>
                     <TableCell align="right">
                       {" "}
-                      <StyledButton onClick={() => handleRemove(ad)}>
+                      <StyledButton
+                        onClick={() => handleRemove(ad)}
+                        color="primary"
+                        variant="contained"
+                      >
                         Quitar de la lista
                       </StyledButton>
                     </TableCell>
@@ -149,9 +163,14 @@ const AdvicesPage = ({ advice }) => {
                 )}
               />
             </div>
-            <StyledButton type="submit">
+            <Button
+              type="submit"
+              className={styles.Buttons}
+              color="primary"
+              variant="contained"
+            >
               <SearchIcon /> Buscar
-            </StyledButton>
+            </Button>
           </form>
           <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -164,9 +183,11 @@ const AdvicesPage = ({ advice }) => {
               <TableBody>
                 {parameter === null ? (
                   <div>Busca consejos</div>
+                ) : data.message ? (
+                  <div>No hay resultados para su busqueda</div>
                 ) : (
-                  advicesList &&
-                  advicesList.map((ad) => (
+                  data &&
+                  data.slips.map((ad) => (
                     <TableRow
                       key={ad.id}
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -176,7 +197,11 @@ const AdvicesPage = ({ advice }) => {
                       </TableCell>
                       <TableCell align="right">
                         {" "}
-                        <StyledButton onClick={() => handleSaveAdvice(ad)}>
+                        <StyledButton
+                          onClick={() => handleSaveAdvice(ad)}
+                          color="primary"
+                          variant="contained"
+                        >
                           Marcar como favorito
                         </StyledButton>
                       </TableCell>
@@ -219,6 +244,6 @@ const StyledGrid = styled(Grid)`
   text-align: center;
 `;
 const StyledButton = styled(Button)`
-  background-color: #1890ff;
+  background-color: aquamarine;
   color: aliceblue;
 `;
